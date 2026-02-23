@@ -31,10 +31,8 @@
                     @endphp
                     @foreach ($querydmenu as $d)
                         <li class="nav-item">
-                            <a class="nav-link blank {{ $d->url == $url_menu ? 'active' : '' }}"
-                                href="{{ URL::to($d->url) }}">
-                                <div
-                                    class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
+                            <a class="nav-link blank {{ $d->url == $url_menu ? 'active' : '' }}" href="{{ URL::to($d->url) }}">
+                                <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                                     <i class="ni {{ $d->icon }} text-primary text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1 py-1">{{ $d->name }}</span>
@@ -56,55 +54,116 @@
                 @else
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#{{ $g->gmenu }}"
-                            class="nav-link {{ $g->name == $title_group ? 'active' : '' }}"
-                            aria-controls="{{ $g->gmenu }}" role="button"
-                            {{ $g->name == $title_group ? 'aria-expanded=true' : '' }}>
-                            <div
-                                class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
+                            class="nav-link {{ $g->name == $title_group ? 'active' : '' }}" aria-controls="{{ $g->gmenu }}"
+                            role="button" {{ $g->name == $title_group ? 'aria-expanded=true' : '' }}>
+                            <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                                 <i class="ni {{ $g->icon }} text-primary text-sm opacity-10"></i>
                             </div>
                             <span class="nav-link-text ms-1">{{ $g->name }}</span>
                         </a>
-                        <div class="collapse {{ $g->name == $title_group ? 'show' : '' }}" id="{{ $g->gmenu }}"
-                            style="">
+                        <div class="collapse {{ $g->name == $title_group ? 'show' : '' }}" id="{{ $g->gmenu }}" style="">
                             <ul class="nav ms-4">
-                                {{-- Query DMenu --}}
+                                {{-- Query Parent Menus (sub IS NULL or '') --}}
                                 @php
-                                    $querydmenu = DB::table('sys_dmenu')
+                                    $parentMenus = DB::table('sys_dmenu')
                                         ->join('sys_auth', 'sys_dmenu.dmenu', '=', 'sys_auth.dmenu')
                                         ->whereIn('sys_auth.idroles', $users_rules)
                                         ->where('sys_dmenu.isactive', '1')
                                         ->where('sys_dmenu.show', '1')
                                         ->where('sys_auth.isactive', '1')
                                         ->where('sys_dmenu.gmenu', $g->gmenu)
+                                        ->whereNull('sys_dmenu.sub')
                                         ->select('sys_dmenu.*')
                                         ->distinct()
                                         ->orderBy('sys_dmenu.urut', 'asc')
                                         ->get();
                                 @endphp
-                                @foreach ($querydmenu as $d)
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ $d->url == $url_menu ? 'active' : '' }}"
-                                            href="{{ URL::to($d->url) }}">
-                                            <div
-                                                class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
-                                                <i class="ni {{ $d->icon }} text-primary text-sm opacity-10"></i>
+
+                                @foreach ($parentMenus as $parent)
+                                    @php
+                                        // Check for Children
+                                        $children = DB::table('sys_dmenu')
+                                            ->join('sys_auth', 'sys_dmenu.dmenu', '=', 'sys_auth.dmenu')
+                                            ->whereIn('sys_auth.idroles', $users_rules)
+                                            ->where('sys_dmenu.isactive', '1')
+                                            ->where('sys_dmenu.show', '1')
+                                            ->where('sys_auth.isactive', '1')
+                                            ->where('sys_dmenu.gmenu', $g->gmenu)
+                                            ->where('sys_dmenu.sub', $parent->dmenu)
+                                            ->select('sys_dmenu.*')
+                                            ->distinct()
+                                            ->orderBy('sys_dmenu.urut', 'asc')
+                                            ->get();
+
+                                        $hasChildren = $children->isNotEmpty();
+                                        $isActiveParent = false;
+
+                                        // Check if any child is active to keep parent open
+                                        if ($hasChildren) {
+                                            foreach ($children as $child) {
+                                                if ($child->url == $url_menu) {
+                                                    $isActiveParent = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    @endphp
+
+                                    @if ($hasChildren)
+                                        {{-- Render as Dropdown Parent --}}
+                                        <li class="nav-item">
+                                            <a data-bs-toggle="collapse" href="#submenu-{{ $parent->dmenu }}"
+                                                class="nav-link {{ $isActiveParent ? 'active' : '' }}"
+                                                aria-controls="submenu-{{ $parent->dmenu }}" role="button"
+                                                aria-expanded="{{ $isActiveParent ? 'true' : 'false' }}">
+                                                <div
+                                                    class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
+                                                    <i class="ni {{ $parent->icon }} text-primary text-sm opacity-10"></i>
+                                                </div>
+                                                <span class="nav-link-text ms-1">{{ $parent->name }}</span>
+                                            </a>
+                                            <div class="collapse {{ $isActiveParent ? 'show' : '' }}" id="submenu-{{ $parent->dmenu }}">
+                                                <ul class="nav ms-4">
+                                                    @foreach ($children as $child)
+                                                        <li class="nav-item">
+                                                            <a class="nav-link {{ $child->url == $url_menu ? 'active' : '' }}"
+                                                                href="{{ URL::to($child->url) }}">
+                                                                <div
+                                                                    class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
+                                                                    <i class="ni {{ $child->icon }} text-info text-sm opacity-10"></i>
+                                                                </div>
+                                                                <span class="nav-link-text ms-1">{{ $child->name }}</span>
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
                                             </div>
-                                            <span class="nav-link-text ms-1 py-1">{{ $d->name }}</span>
-                                            {{-- check query notif --}}
-                                            @if ($d->notif != '')
-                                                @php
-                                                    // get notif
-                                                    $data_notif = DB::select($d->notif);
-                                                    foreach ($data_notif as $n) {
-                                                        $notif = $n->notif;
-                                                    }
-                                                @endphp
-                                                <span style="background-color: #f33b3b;position: absolute;right: 20px;"
-                                                    class="badge text-white ms-1">{{ $notif }}</span>
-                                            @endif
-                                        </a>
-                                    </li>
+                                        </li>
+                                    @else
+                                        {{-- Render as Normal Link --}}
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ $parent->url == $url_menu ? 'active' : '' }}"
+                                                href="{{ URL::to($parent->url) }}">
+                                                <div
+                                                    class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
+                                                    <i class="ni {{ $parent->icon }} text-primary text-sm opacity-10"></i>
+                                                </div>
+                                                <span class="nav-link-text ms-1 py-1">{{ $parent->name }}</span>
+
+                                                {{-- Notif Badge --}}
+                                                @if ($parent->notif != '')
+                                                    @php
+                                                        $data_notif = DB::select($parent->notif);
+                                                        foreach ($data_notif as $n) {
+                                                            $notif = $n->notif;
+                                                        }
+                                                    @endphp
+                                                    <span style="background-color: #f33b3b;position: absolute;right: 20px;"
+                                                        class="badge text-white ms-1">{{ $notif }}</span>
+                                                @endif
+                                            </a>
+                                        </li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </div>

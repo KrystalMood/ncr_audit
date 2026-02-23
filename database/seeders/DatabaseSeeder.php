@@ -187,7 +187,7 @@ class DatabaseSeeder extends Seeder
             'layout' => 'report'
         ]);
 
-        //insert tabel sys_auth        
+        //insert tabel sys_auth
         DB::table('sys_auth')->insert([
             'idroles' => 'admins',
             'gmenu' => 'blankx',
@@ -527,7 +527,7 @@ class DatabaseSeeder extends Seeder
             'name' => '2026'
         ]);
 
-        //insert tabel sys_app        
+        //insert tabel sys_app
         DB::table('sys_app')->insert([
             'appid' => 'msjframework',
             'appname' => 'MSJFramework',
@@ -543,6 +543,8 @@ class DatabaseSeeder extends Seeder
 
         //other seeder
         $this->call([
+            MstMenuGroupsSeeder::class,
+
             tabel_users::class,
             tabel_tabel_menu::class,
             tabel_sys_gmenu::class,
@@ -557,6 +559,17 @@ class DatabaseSeeder extends Seeder
             menu_rpt_seeder::class,
             tabel_rpt_seeder::class,
             example_call_seed::class,
+
+            MstDepartmentsSeeder::class,
+            MstIsoStandardsSeeder::class,
+            MstIsoClausesSeeder::class,
+            MstDepartmentDefaultClauseSeeder::class,
+            MstCategoriesSeeder::class,
+            MstFishboneFactorsSeeder::class,
+            MstAuditorSeeder::class,
+
+            MstScheduleHeaderSeeder::class,
+            TrsScheduleSessionSeeder::class,
         ]);
     }
 }
