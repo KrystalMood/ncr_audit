@@ -570,6 +570,9 @@ class DatabaseSeeder extends Seeder
 
             MstScheduleHeaderSeeder::class,
             TrsScheduleSessionSeeder::class,
+
+            RptAnlSeeder::class,
+            RptLogSeeder::class,
         ]);
     }
 }

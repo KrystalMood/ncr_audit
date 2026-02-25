@@ -17,8 +17,11 @@ return new class extends Migration
             $table->char('idclauses', 6);
 
             // framework
+            $table->enum('isactive', ['0', '1'])->default('1');
             $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->string('user_create')->nullable();
+            $table->string('user_update')->nullable();
 
             // foreign key
             $table->foreign('iddepartments')->references('iddepartments')->on('mst_departments')->onDelete('cascade')->onUpdate('cascade');
