@@ -13,8 +13,7 @@ return new class extends Migration
     {
        Schema::create('trs_ncr_fishbone', function (Blueprint $table) {
 
-    $table->integer('id')->autoIncrement();
-
+$table->increments('id');
     $table->char('idncr', 10);
     $table->char('idfishbone', 6);
 

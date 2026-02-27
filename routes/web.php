@@ -34,4 +34,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('/{page}/{action}', [PageController::class, 'index'])->name(''); //route update
 	Route::delete('/{page}/{action}', [PageController::class, 'index'])->name(''); //route delete(destroy)
 	Route::get('/{page}/{action}/{id}', [PageController::class, 'index'])->name(''); //route CRUD
+	
+
 });

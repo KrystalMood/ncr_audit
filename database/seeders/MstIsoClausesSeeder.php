@@ -16,23 +16,24 @@ class MstIsoClausesSeeder extends Seeder
         $gmenu = 'master';
         $dmenu = 'isocls';
 
-        DB::table('sys_dmenu')->insertOrIgnore([
-            'dmenu' => $dmenu,
+     DB::table('sys_dmenu')->updateOrInsert(
+    ['dmenu' => $dmenu],
+        [
             'gmenu' => $gmenu,
             'urut' => 2,
             'name' => 'ISO Clauses',
             'icon' => 'ni-bullet-list-67',
             'url' => 'isocls',
             'tabel' => 'mst_iso_clauses',
-            'layout' => 'master',
+            'layout' => 'manual', 
             'sub' => 'isomgt',
             'show' => '1',
             'js' => '0',
             'isactive' => '1',
             'user_create' => 'SYSTEM',
             'created_at' => now(),
-        ]);
-
+        ]
+    );
         DB::table('sys_table')->where('dmenu', $dmenu)->delete();
 
         // ID Clauses
@@ -63,16 +64,17 @@ class MstIsoClausesSeeder extends Seeder
             'field' => 'idstandards',
             'alias' => 'Standar ISO',
             'type' => 'enum',
-            'length' => '6',
+            'length' => '20',
             'decimals' => '0',
             'default' => '',
-            'validate' => 'required|max:6',
+            'validate' => 'required|integer', 
             'primary' => '0',
             'filter' => '1',
             'list' => '1',
             'show' => '1',
             'query' => "select idstandards as value, concat(code,' - ',name) as name from mst_iso_standards where isactive = '1'",
             'class' => 'custom-select',
+
         ]);
 
         // No Klausul
@@ -136,24 +138,28 @@ class MstIsoClausesSeeder extends Seeder
         ]);
 
         // Parent ID
-        DB::table('sys_table')->insert([
-            'gmenu' => $gmenu,
-            'dmenu' => $dmenu,
-            'urut' => '6',
-            'field' => 'parent_id',
-            'alias' => 'Parent Klausa',
-            'type' => 'enum',
-            'length' => '6',
-            'decimals' => '0',
-            'default' => '',
-            'validate' => 'nullable|max:6',
-            'primary' => '0',
-            'filter' => '1',
-            'list' => '0',
-            'show' => '1',
-            'query' => "select idclauses as value, concat(clause_number,' - ',clause_name) as name from mst_iso_clauses where isactive = '1'",
-            'class' => 'custom-select',
-        ]);
+       DB::table('sys_table')->updateOrInsert(
+    [
+        'gmenu' => $gmenu,
+        'dmenu' => $dmenu,
+        'urut'  => 5
+    ],
+    [
+        'field' => 'parent_id',
+        'alias' => 'Parent Klausa',
+        'type' => 'enum',
+        'length' => '20',
+        'decimals' => '0',
+        'default' => '',
+        'validate' => 'nullable|integer',
+        'primary' => '0',
+        'filter' => '1',
+        'list' => '0',
+        'show' => '1',
+        'query' => "select idclauses as value, concat(clause_number,' - ',clause_name) as name from mst_iso_clauses where isactive = '1'",
+        'class' => 'custom-select',
+    ]
+);
 
         // Level
         DB::table('sys_table')->insert([
@@ -195,17 +201,7 @@ class MstIsoClausesSeeder extends Seeder
             'class' => 'custom-select',
         ]);
 
-        DB::table('sys_id')->insertOrIgnore([
-            'dmenu' => $dmenu,
-            'source' => 'ext',
-            'internal' => 'CLS',
-            'external' => '0',
-            'urut' => 1,
-            'length' => 3,
-            'isactive' => '1',
-            'user_create' => 'SYSTEM',
-            'created_at' => now(),
-        ]);
+     
 
         DB::table('sys_auth')->insertOrIgnore([
             'idroles' => 'admins',

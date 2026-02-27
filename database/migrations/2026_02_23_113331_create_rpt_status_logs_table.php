@@ -13,8 +13,7 @@ return new class extends Migration
     {
       Schema::create('rpt_status_logs', function (Blueprint $table) {
 
-    $table->integer('idlog')->autoIncrement();
-
+    $table->increments('idlog');
     $table->char('idncr', 10);
 
     $table->enum('old_status', ['ENTRY','ON_PROGRESS','IN_REVIEW','CLOSED'])->nullable();

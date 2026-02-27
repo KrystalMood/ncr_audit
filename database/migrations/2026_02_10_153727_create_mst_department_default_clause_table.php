@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('mst_department_default_clause', function (Blueprint $table) {
             $table->increments('id');
             $table->char('iddepartments', 6);
-            $table->char('idclauses', 6);
-
+            $table->unsignedBigInteger('idclauses');
             // framework
             $table->timestamp('created_at')->useCurrent();
             $table->string('user_create')->nullable();
