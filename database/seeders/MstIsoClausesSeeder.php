@@ -47,10 +47,10 @@ class MstIsoClausesSeeder extends Seeder
             'length' => '6',
             'decimals' => '0',
             'default' => '',
-            'validate' => 'required|max:6|unique:mst_iso_clauses,idclauses',
+            'validate' => '',
             'primary' => '1',
             'filter' => '0',
-            'list' => '1',
+            'list' => '0',
             'show' => '0',
             'query' => '',
             'class' => '',
@@ -142,13 +142,13 @@ class MstIsoClausesSeeder extends Seeder
     [
         'gmenu' => $gmenu,
         'dmenu' => $dmenu,
-        'urut'  => 5
+        'urut'  => 6,
     ],
     [
         'field' => 'parent_id',
         'alias' => 'Parent Klausa',
         'type' => 'enum',
-        'length' => '20',
+        'length' => '11',
         'decimals' => '0',
         'default' => '',
         'validate' => 'nullable|integer',

@@ -1,155 +1,122 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
+    @include('layouts.navbars.auth.topnav', ['title' => 'Edit ISO Clause'])
 
-@include('layouts.navbars.auth.topnav', ['title' => 'Edit ISO Clause'])
+    <div class="container-fluid py-4">
 
-<div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-md-12">
 
-<div class="row">
-<div class="col-md-12">
+                <div class="card">
 
-<div class="card">
+                    <div class="card-header pb-0">
+                        <h6>Edit ISO Clause</h6>
+                    </div>
 
-<div class="card-header pb-0">
-<h6>Edit ISO Clause</h6>
-</div>
+                    <div class="card-body">
 
-<div class="card-body">
+                        @include('components.alert')
 
-@include('components.alert')
+                        <form action="{{ url($url_menu . '/' . encrypt($row->idclauses)) }}" method="POST">
 
-<form
-action="{{ url($url_menu.'/'.encrypt($row->idclauses)) }}"
-method="POST">
+                            @csrf
+                            @method('PUT')
 
-@csrf
-@method('PUT')
+                            <div class="row">
 
-<div class="row">
+                                <div class="col-md-4">
 
-<div class="col-md-4">
+                                    <label class="form-label">Standar ISO</label>
 
-<label class="form-label">Standar ISO</label>
+                                    <select name="idstandards" class="form-control" required>
 
-<select
-name="idstandards"
-class="form-control"
-required>
+                                        <option value="">-- Pilih ISO --</option>
 
-<option value="">-- Pilih ISO --</option>
+                                        @foreach ($isoStandards as $iso)
+                                            <option value="{{ $iso->idstandards }}"
+                                                {{ $row->idstandards == $iso->idstandards ? 'selected' : '' }}>
 
-@foreach($isoStandards as $iso)
+                                                {{ $iso->code }} - {{ $iso->name }}
 
-<option
-value="{{ $iso->idstandards }}"
-{{ $row->idstandards == $iso->idstandards ? 'selected' : '' }}>
+                                            </option>
+                                        @endforeach
 
-{{ $iso->code }} - {{ $iso->name }}
+                                    </select>
 
-</option>
-
-@endforeach
-
-</select>
-
-</div>
+                                </div>
 
 
-<div class="col-md-4">
+                                <div class="col-md-4">
 
-<label class="form-label">Nomor Klausul</label>
+                                    <label class="form-label">Nomor Klausul</label>
 
-<input
-type="text"
-name="clause_number"
-class="form-control"
-value="{{ $row->clause_number }}"
-required>
+                                    <input type="text" name="clause_number" class="form-control"
+                                        value="{{ $row->clause_number }}" required>
 
-</div>
+                                </div>
 
 
-<div class="col-md-4">
+                                <div class="col-md-4">
 
-<label class="form-label">Level</label>
+                                    <label class="form-label">Level</label>
 
-<input
-type="number"
-class="form-control"
-value="{{ $row->level }}"
-readonly>
+                                    <input type="number" class="form-control" value="{{ $row->level }}" readonly>
 
-</div>
+                                </div>
 
-</div>
+                            </div>
 
 
-<div class="row mt-3">
+                            <div class="row mt-3">
 
-<div class="col-md-12">
+                                <div class="col-md-12">
 
-<label class="form-label">Nama Klausul</label>
+                                    <label class="form-label">Nama Klausul</label>
 
-<input
-type="text"
-name="clause_name"
-class="form-control"
-value="{{ $row->clause_name }}"
-required>
+                                    <input type="text" name="clause_name" class="form-control"
+                                        value="{{ $row->clause_name }}" required>
 
-</div>
+                                </div>
 
-</div>
+                            </div>
 
 
-<div class="row mt-3">
+                            <div class="row mt-3">
 
-<div class="col-md-12">
+                                <div class="col-md-12">
 
-<label class="form-label">Deskripsi</label>
+                                    <label class="form-label">Deskripsi</label>
 
-<textarea
-name="description"
-class="form-control"
-rows="4">
+                                    <textarea name="description" class="form-control" rows="4">{{ $row->description }}</textarea>
 
-{{ $row->description }}
+                                </div>
 
-</textarea>
+                            </div>
+                            <div class="mt-4">
 
-</div>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>
+                                    Update
+                                </button>
 
-</div>
+                                <a href="{{ url($url_menu) }}" class="btn btn-secondary">
 
+                                    Kembali
 
-<div class="mt-4">
+                                </a>
 
-<button class="btn btn-primary">
-<i class="fas fa-save me-1"></i>
-Update
-</button>
+                            </div>
 
-<a
-href="{{ url($url_menu) }}"
-class="btn btn-secondary">
+                        </form>
 
-Kembali
+                    </div>
 
-</a>
+                </div>
 
-</div>
+            </div>
 
-</form>
+        </div>
 
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
+    </div>
 @endsection

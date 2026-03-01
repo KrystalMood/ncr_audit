@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('mst_iso_standards', function (Blueprint $table) {
-                     $table->bigIncrements('idstandards');
+              $table->bigIncrements('idstandards');
 
             $table->string('code', 20)->nullable()->unique();
             $table->string('name', 100);
